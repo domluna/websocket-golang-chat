@@ -1,6 +1,10 @@
 This is a demo of a simple web chat app using golang and websockets.
 
-To get the files
+This requires the go websocket package, to get the package
+
+<code>go get code.google.com/p/go.net/websocket</code>
+
+To get the files for this example app
 
 <code>git clone https://github.com/Niessy/websocket-golang-chat.git
 
