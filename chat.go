@@ -22,7 +22,7 @@ var (
 
 // Initialize handlers and websocket handlers
 func init() {
-	http.HandleFunc("/", rootHandler)
+	http.HandleFunc("/", RootHandler)
 	http.Handle("/sock", websocket.Handler(SockServer))
 }
 
