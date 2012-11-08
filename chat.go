@@ -14,7 +14,7 @@ const (
 
 var (
 	pwd, _         = os.Getwd()
-	rootTemp       = template.Must(template.ParseFiles(pwd + "/ex.html"))
+	rootTemp       = template.Must(template.ParseFiles(pwd + "/chat.html"))
 	JSON           = websocket.JSON            // codec for JSON
 	Message        = websocket.Message         // codec for string, []byte
 	active_clients = make(map[client_sock]int) // map containing clients
