@@ -13,11 +13,11 @@ const (
 )
 
 var (
-	pwd, _         = os.Getwd()
-	rootTemp       = template.Must(template.ParseFiles(pwd + "/chat.html"))
-	JSON           = websocket.JSON            // codec for JSON
-	Message        = websocket.Message         // codec for string, []byte
-	active_clients = make(map[client_sock]int) // map containing clients
+	pwd, _        = os.Getwd()
+	RootTemp      = template.Must(template.ParseFiles(pwd + "/chat.html"))
+	JSON          = websocket.JSON           // codec for JSON
+	Message       = websocket.Message        // codec for string, []byte
+	ActiveClients = make(map[ClientConn]int) // map containing clients
 )
 
 // Initialize handlers and websocket handlers
@@ -26,12 +26,13 @@ func init() {
 	http.Handle("/sock", websocket.Handler(SockServer))
 }
 
-// 
-type client_sock struct {
+// Client connection consists of the websocket and the client ip
+type ClientConn struct {
 	websocket *websocket.Conn
 	client_ip string
 }
 
+// WebSocket server to handle chat between clients
 func SockServer(ws *websocket.Conn) {
 	var err error
 	var client_msg string
@@ -47,9 +48,9 @@ func SockServer(ws *websocket.Conn) {
 
 	client := ws.Request().RemoteAddr
 	log.Println("Client connected:", client)
-	sock_cli := client_sock{ws, client}
-	active_clients[sock_cli] = 0
-	log.Println("Number of clients connected ...", len(active_clients))
+	sock_cli := ClientConn{ws, client}
+	ActiveClients[sock_cli] = 0
+	log.Println("Number of clients connected ...", len(ActiveClients))
 
 	// for loop so the websocket stays open otherwise
 	// it'll close after one Receieve and Send
@@ -58,13 +59,13 @@ func SockServer(ws *websocket.Conn) {
 			// If we cannot Read then the connection is closed
 			log.Println("Websocket Disconnected waiting", err.Error())
 			// remove the ws client conn from our active clients
-			delete(active_clients, sock_cli)
-			log.Println("Number of clients still connected ...", len(active_clients))
+			delete(ActiveClients, sock_cli)
+			log.Println("Number of clients still connected ...", len(ActiveClients))
 			return
 		}
 
 		client_msg = sock_cli.client_ip + " Said: " + client_msg
-		for cs, _ := range active_clients {
+		for cs, _ := range ActiveClients {
 			if err = Message.Send(cs.websocket, client_msg); err != nil {
 				// we could not send the message to a peer
 				log.Println("Could not send message to ", cs.client_ip, err.Error())
@@ -73,8 +74,9 @@ func SockServer(ws *websocket.Conn) {
 	}
 }
 
-func rootHandler(w http.ResponseWriter, req *http.Request) {
-	err := rootTemp.Execute(w, listenAddr)
+// RootHandler renders the template for the root page
+func RootHandler(w http.ResponseWriter, req *http.Request) {
+	err := RootTemp.Execute(w, listenAddr)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
