@@ -58,7 +58,7 @@
 	<body>
 		<h1> This chat is powered by web sockets </h1>
 		<div id ="text">
-		<textarea id="textin" cols="30" rows="4" placeholder="This is where you type...">
+		<textarea id="textin" cols="30" rows="4" placeholder="This is where you type..." autofocus>
 		</textarea>
 		<button id="send">Send Message</button>
 		</div>
@@ -71,9 +71,11 @@
 		</div>
 
 		<script>
+			$('#textin').val("");
 			// take what's the textbox and send it off
 			$('#send').click( function(event) {
 				sock.send($('#textin').val());
+				$('#textin').val("");
 			});
 		</script>
 	</body>
