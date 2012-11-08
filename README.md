@@ -12,6 +12,6 @@ To get the files for this example app
 
 Note that in order to call the binary from any folder you have to change the path in line 17 to
 
-<code>"$GOROOT/github.com/Niessy/websocket-golang-chat/chat.html"</code>
+<code>"PATH_TO_FOLDER/websocket-golang-chat/chat.html"</code>
 
 If your not going to need to call it from anywhere but the current folder then dont do anything.
