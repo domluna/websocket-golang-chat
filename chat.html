@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<title> WebSockets </title>
+		<style>
+			* {
+				padding: 0px;
+				margin: 0px;
+			}
+			body {
+				width:100%;
+				font-family: fantasy;
+				font-size: 13px;
+			}
+			h1 {
+				text-align: center;
+			}
+			#text {
+				position: relative;
+				left: 500px;
+				top: 20px;
+			}
+			#chat-box-container {
+				width: 600px;
+				height: 100%;
+				position: relative;
+				left: 500px;
+				top: 50px;
+			}
+			#chatbox {
+				position: relative;
+				right: 150px;
+				border-style: solid;
+				border-radius: 2px;
+				padding: 10px;
+			}
+		</style>
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+		<script>
+			try {
+				var sock = new WebSocket("ws://{{.}}/sock");
+				//sock.binaryType = 'blob'; // can set it to 'blob' or 'arraybuffer 
+				console.log("Websocket - status: " + sock.readyState);
+				sock.onopen = function(m) { 
+					console.log("CONNECTION opened..." + this.readyState);}
+				sock.onmessage = function(m) { 
+					$('#chatbox').append('<p>' + m.data + '</p>');}
+				sock.onerror = function(m) {
+					console.log("Error occured sending..." + m.data);}
+				sock.onclose = function(m) { 
+					console.log("Disconnected - status " + this.readyState);}
+			} catch(exception) {
+				console.log(exception);
+			}
+		</script>
+	</head>
+	<body>
+		<h1> This chat is powered by web sockets </h1>
+		<div id = "text">
+		<textarea id="textin" cols="30" rows="4" placeholder="This is where you type...">
+		</textarea>
+		<button id="send">Send Message</button>
+		</div>
+
+		<div id="chat-box-container">
+			<h2> This is the chatbox... </h2>
+			<div id="chatbox">
+				<p> Go Type stuff... </p>
+			</div>
+		</div>
+
+		<script>
+			// take what's the textbox and send it off
+			$('#send').click( function(event) {
+				sock.send($('#textin').val());
+			});
+		</script>
+	</body>
+</html>
+
