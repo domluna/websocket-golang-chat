@@ -6,7 +6,7 @@ This requires the go websocket package, to get the package
 
 To get the files for this example app
 
-<code>go get github.com/Niessy/websocket-golang-chat
+<code>go get github.com/domluna/websocket-golang-chat
 
 <code>go install</code>
 
